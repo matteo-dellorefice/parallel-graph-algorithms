@@ -1,24 +1,24 @@
 cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
-project(parallel-graph-algorithms LANGUAGES CXX CUDA)
-
-find_package(CUDA REQUIRED)
+project(pgra LANGUAGES CXX CUDA)
 
 include(CTest)
 
-set(TARGET pga)
-
-set(SRC_FILES
-    src/main.cpp
+set(pgra_HEADERS
+    pgra/pgra.hpp
 )
 
-add_executable(${TARGET} ${SRC_FILES})
+set(pgra_SOURCES
+    src/pgra.cpp
+)
 
-target_include_directories(${TARGET} PRIVATE
-    ${CUDA_INCLUDE_DIRS}
-    src)
+add_library(pgra SHARED ${pgra_HEADERS} ${pgra_SOURCES})
 
-target_link_libraries(${TARGET} 
-    ${CMAKE_DL_LIBS})
+target_include_directories(pgra PRIVATE pgra/)
 
-set_target_properties(pga
-    PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+# tests
+set(TEST_TARGET 2d_random_graph_bfs_test)
+add_executable(${TEST_TARGET} test/2d_random_graph_bfs_test.cpp)
+target_link_libraries(${TEST_TARGET} pgra)
+target_include_directories(${TEST_TARGET} PRIVATE pgra/)
+
+set(TEST_TARGET something_else)
