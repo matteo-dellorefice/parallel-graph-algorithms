@@ -1,7 +1,7 @@
 
-#include <pgra.hpp>
+#include <pgra/pgra.hpp>
 
 int main(void)
 {
-    test_pgra();
+    pgra::test_pgra();
 }

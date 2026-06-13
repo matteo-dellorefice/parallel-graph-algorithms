@@ -1,4 +1,4 @@
-#include <pgra.hpp>
+#include <pgra/pgra.hpp>
 
 namespace pgra
 {
