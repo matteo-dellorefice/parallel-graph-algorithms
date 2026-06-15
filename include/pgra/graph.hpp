@@ -1,8 +1,0 @@
-
-namespace pgra
-{
-    struct graph
-    {
-        
-    };
-};
