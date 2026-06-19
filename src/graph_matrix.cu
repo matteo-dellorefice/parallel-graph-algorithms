@@ -1,5 +1,5 @@
 
-#include "pgra/device_graph_matrix.hpp"
+#include "pgra/graph_matrix.hpp"
 
 #include <curand.h>
 #include <thrust/device_ptr.h>
@@ -13,18 +13,9 @@ namespace pgra
 {
     device_graph_matrix::device_graph_matrix(unsigned int n_vertices) :
         n_vertices_(n_vertices),
+        n_edges_(0),
         adj_(n_vertices * n_vertices)
     { }
-
-    unsigned int device_graph_matrix::get_num_edges()
-    {
-        if (n_edges_) return *n_edges_;
-
-        thrust::device_ptr d_ptr = thrust::device_pointer_cast(adj_.buffer_);
-        n_edges_ = thrust::reduce(d_ptr, d_ptr + adj_.size_) >> 1;
-
-        return *n_edges_;
-    }
 
     /**
      * Computes a random binary hollow symmetric matrix with entry probability
@@ -47,6 +38,9 @@ namespace pgra
             (n_vertices + block.y - 1) / block.y);
         
         create_erdos_renyi_kernel<<<grid, block>>>(result.adj_, n_vertices, edge_probability);
+
+        thrust::device_ptr d_ptr = thrust::device_pointer_cast(result.adj_.buffer_);
+        result.n_edges_ = thrust::reduce(d_ptr, d_ptr + result.adj_.size_) >> 1;
 
         return result;
     }

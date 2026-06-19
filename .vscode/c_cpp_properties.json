@@ -6,7 +6,8 @@
                 // "${workspaceFolder}/**",
                 "${workspaceFolder}/include",
                 "/usr/local/cuda/include",
-                "/usr/local/cuda/include/cccl"
+                "/usr/local/cuda/include/cccl",
+                "${workspaceFolder}/nvidia/mathdx/26.03/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
