@@ -15,7 +15,7 @@ namespace pgra
 
         device_graph_matrix(unsigned int n_vertices);
 
-        static device_graph_matrix create_erdos_renyi(unsigned int seed, 
+        static device_graph_matrix create_random(unsigned int seed, 
             unsigned int n_vertices, float edge_probability);
     };
 

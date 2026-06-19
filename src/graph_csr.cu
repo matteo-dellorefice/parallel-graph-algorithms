@@ -2,6 +2,7 @@
 #include "pgra/graph_csr.hpp"
 #include "pgra/graph_matrix.hpp"
 
+#include <curand.h>
 #include <thrust/execution_policy.h>
 #include <thrust/device_ptr.h>
 #include <thrust/copy.h>
@@ -76,12 +77,14 @@ namespace pgra
 {
     device_graph_csr::device_graph_csr(unsigned int n_vertices, unsigned int n_edges) :
         vertices_(n_vertices), 
-        adj_(2 * n_edges)
+        adj_(2 * n_edges),
+        weights_(2 * n_edges)
     { }
 
-    device_graph_csr::device_graph_csr(device_buffer<unsigned int>&& vertices, device_buffer<unsigned int>&& adj) :
+    device_graph_csr::device_graph_csr(device_buffer<unsigned int>&& vertices, device_buffer<unsigned int>&& adj, device_buffer<float>&& weights) :
         vertices_(std::move(vertices)),
-        adj_(std::move(adj))
+        adj_(std::move(adj)),
+        weights_(std::move(weights))
     { }
 
     device_graph_csr device_graph_csr::from_matrix(device_graph_matrix &adjmatrix)
@@ -115,17 +118,15 @@ namespace pgra
         return result;
     }
 
-    device_graph_csr device_graph_csr::create_erdos_renyi(unsigned int seed,  unsigned long n_vertices, float edge_probability) 
+    device_graph_csr device_graph_csr::create_random(unsigned int seed,  unsigned long n_vertices, float edge_probability) 
     {
         double max_edges = n_vertices * (n_vertices - 1) * 0.5;
         
-        std::cout << "max edges: " << std::fixed << max_edges << std::endl;
         std::random_device rd;
         std::mt19937 gen(rd());
         std::binomial_distribution<unsigned long> dist((unsigned long) max_edges, edge_probability);
 
         unsigned long n_edges = dist(gen);
-        std::cout << "n_edges: " << n_edges << std::endl;
 
         device_buffer<unsigned int> edge_first(n_edges);
         device_buffer<unsigned int> edge_second(n_edges);
@@ -152,6 +153,12 @@ namespace pgra
         auto vertices_ptr = thrust::device_pointer_cast(vertices.buffer_);
         thrust::exclusive_scan(temp_ptr, ends_iter.second, vertices_ptr);
 
-        return device_graph_csr(std::move(vertices), std::move(edge_second));
+        device_buffer<float> weights(edge_second.size_);
+        curandGenerator_t cu_gen;
+        curandCreateGenerator(&cu_gen, CURAND_RNG_PSEUDO_DEFAULT);
+        curandSetPseudoRandomGeneratorSeed(cu_gen, seed);
+        curandGenerateUniform(cu_gen, (float *) weights.buffer_, weights.size_);
+
+        return device_graph_csr(std::move(vertices), std::move(edge_second), std::move(weights));
     }
 };

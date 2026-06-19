@@ -5,7 +5,7 @@
 #include <thrust/device_ptr.h>
 #include <thrust/reduce.h>
 
-__global__ void create_erdos_renyi_kernel(
+__global__ void create_random_kernel(
     const pgra::device_buffer<unsigned int>& dbuf, 
     size_t n_vertices, float edge_probability);
 
@@ -21,7 +21,7 @@ namespace pgra
      * Computes a random binary hollow symmetric matrix with entry probability
      * equal to edge_probability.
      */
-    device_graph_matrix device_graph_matrix::create_erdos_renyi(
+    device_graph_matrix device_graph_matrix::create_random(
         unsigned int seed, unsigned int n_vertices, float edge_probability)
     {
         device_graph_matrix result(n_vertices);
@@ -37,7 +37,7 @@ namespace pgra
         dim3 grid((n_vertices + block.x - 1) / block.x, 
             (n_vertices + block.y - 1) / block.y);
         
-        create_erdos_renyi_kernel<<<grid, block>>>(result.adj_, n_vertices, edge_probability);
+        create_random_kernel<<<grid, block>>>(result.adj_, n_vertices, edge_probability);
 
         thrust::device_ptr d_ptr = thrust::device_pointer_cast(result.adj_.buffer_);
         result.n_edges_ = thrust::reduce(d_ptr, d_ptr + result.adj_.size_) >> 1;
@@ -46,7 +46,7 @@ namespace pgra
     }
 };
 
-__global__ void create_erdos_renyi_kernel(
+__global__ void create_random_kernel(
     const pgra::device_buffer<unsigned int>& dbuf, 
     size_t n_vertices, float edge_probability)
 {
