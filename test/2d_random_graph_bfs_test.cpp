@@ -14,14 +14,14 @@ int main(void)
 
     auto t1 = std::chrono::high_resolution_clock::now();
     // pgra::device_graph_csr d_graph = pgra::device_graph_csr::create_random(time(NULL), 1000000, .0001);
-    pgra::device_graph_coo d_graph = pgra::device_graph_coo::create_random(time(NULL), 10000, 0.0001);
+    pgra::device_graph_coo d_graph = pgra::device_graph_coo::create_random(time(NULL), 1000000, 0.0005);
     auto t2 = std::chrono::high_resolution_clock::now();
     std::chrono::milliseconds last_exec_time_ = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
 
     std::cout << "time: " << last_exec_time_.count() << std::endl;
 
-    pgra::host_graph_coo h_graph = d_graph;
-    h_graph.to_csv("test.csv");
+    // pgra::host_graph_coo h_graph = d_graph;
+    // h_graph.to_csv("test.csv");
 
     
     // std::cout << "vertices size: " << d_graph.vertices_.size_ << std::endl;
