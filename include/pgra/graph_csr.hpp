@@ -1,9 +1,10 @@
 #ifndef PGRA_GRAPH_CSR_HPP
 #define PGRA_GRAPH_CSR_HPP
 
-#include "buffer.hpp"
+#include "pgra/buffer.hpp"
 
 #include <vector>
+#include <string>
 
 namespace pgra
 {
@@ -19,8 +20,7 @@ namespace pgra
         device_graph_csr(device_buffer<unsigned int>&& vertices, device_buffer<unsigned int>&& adj, device_buffer<float>&& weights);
 
         static device_graph_csr from_matrix(device_graph_matrix &matrix);
-        static device_graph_csr create_random(unsigned int seed, 
-            unsigned long n_vertices, float edge_probability);
+        static device_graph_csr create_random(unsigned int seed, unsigned long n_vertices, float edge_probability);
     };
 
     struct host_graph_csr
@@ -28,9 +28,11 @@ namespace pgra
         host_buffer<unsigned int> vertices_;
         host_buffer<unsigned int> adj_;
         host_buffer<float> weights_;
-        
+
         host_graph_csr(unsigned int n_vertices, unsigned int n_edges);
         host_graph_csr(const device_graph_csr& other);
+
+        void to_csv(std::string filename);
     };
 };
 

@@ -23,6 +23,7 @@ set(pgra_HEADERS
     include/pgra/pgra.hpp
     include/pgra/graph_matrix.hpp
     include/pgra/graph_csr.hpp
+    include/pgra/graph_coo.hpp
     include/pgra/bfs.hpp
 )
 
@@ -31,6 +32,8 @@ set(pgra_SOURCES
     src/graph_matrix.cu
     src/graph_csr.cpp
     src/graph_csr.cu
+    src/graph_coo.cpp
+    src/graph_coo.cu
     src/bfs.cu
 )
 
