@@ -1,4 +1,4 @@
-<img width="1230" height="710" alt="output" src="https://github.com/user-attachments/assets/e5d27597-bce5-4edf-a014-37c30850173a" />
+<img alt="Screenshot From 2026-06-20 18-25-23" src="https://github.com/user-attachments/assets/7f556008-8002-47f7-b89a-61e708b7d9dd" />
 
 # Parallel graph algorithms
 
