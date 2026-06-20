@@ -15,7 +15,7 @@ int main(void)
     std::cout << "max unsigned long " << std::numeric_limits<unsigned long>::max() << std::endl;
     std::cout << "max unsigned int " << std::numeric_limits<unsigned int>::max() << std::endl;
     auto t1 = std::chrono::high_resolution_clock::now();
-    pgra::device_graph_csr d_graph = pgra::device_graph_csr::create_erdos_renyi(time(NULL), 1000000, .0001);
+    pgra::device_graph_csr d_graph = pgra::device_graph_csr::create_random(time(NULL), 1000000, .0001);
     auto t2 = std::chrono::high_resolution_clock::now();
     std::chrono::milliseconds last_exec_time_ = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
 
